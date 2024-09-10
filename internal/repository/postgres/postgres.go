@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"os"
 )
 
@@ -36,8 +37,7 @@ func (db *Database) CreateNewUserTable() error {
 	newTableString := `CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		username VARCHAR(100) NOT NULL UNIQUE,
-		password VARCHAR(100) NOT NULL,
-		isExist BOOLEAN DEFAULT true
+		password VARCHAR(100) NOT NULL
 	);`
 
 	_, err := db.DB.Exec(newTableString)

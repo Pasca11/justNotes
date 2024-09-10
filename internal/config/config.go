@@ -1,13 +1,17 @@
 package config
 
 import (
+	"github.com/Pasca11/justNotes/internal/logger"
+	"github.com/Pasca11/justNotes/internal/transport/server"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
 	"os"
 )
 
 type Config struct {
-	App *App `yaml:"app"`
+	App    *App           `yaml:"app"`
+	Server *server.Config `yaml:"server"`
+	Logger *logger.Config `yaml:"logger"`
 }
 
 type App struct {

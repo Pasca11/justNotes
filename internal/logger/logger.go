@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"context"
 	"log/slog"
 	"os"
 )
@@ -19,13 +18,13 @@ type Config struct {
 }
 
 type Logger interface {
-	DebugContext(ctx context.Context, msg string, args ...interface{})
-	InfoContext(ctx context.Context, msg string, args ...interface{})
-	WarnContext(ctx context.Context, msg string, args ...interface{})
-	ErrorContext(ctx context.Context, msg string, args ...interface{})
+	Info(msg string, args ...interface{})
+	Error(msg string, args ...interface{})
+	Warn(msg string, args ...interface{})
+	Debug(msg string, args ...interface{})
 }
 
-func New(cfg Config) Logger {
+func New(cfg *Config) Logger {
 	opts := slog.HandlerOptions{
 		AddSource: cfg.Source,
 	}
@@ -35,7 +34,6 @@ func New(cfg Config) Logger {
 	case PROD:
 		opts.Level = slog.LevelWarn
 	}
-
-	log := slog.New(slog.NewTextHandler(os.Stdout, &opts))
+	log := slog.New(slog.NewJSONHandler(os.Stdout, &opts))
 	return log
 }
