@@ -33,8 +33,8 @@ func main() {
 	}
 	lg.Debug("Database initialized")
 
-	s := service.New(db)
-	c, err := controller.New(s)
+	s := service.NewUserService(db)
+	c, err := controller.New(s, lg)
 	if err != nil {
 		lg.Error("Failed to create controller: " + err.Error())
 		return

@@ -9,4 +9,4 @@ server:
   read_timeout: 2
   write_timeout: 2
 logger:
-  level: DEV
+  level: 'local'

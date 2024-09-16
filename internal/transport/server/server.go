@@ -42,7 +42,6 @@ func (s *Server) Run() error {
 		WriteTimeout: s.setWriteTimeout(),
 		IdleTimeout:  s.setIdleTimeout(),
 	}
-
 	return s.srv.Serve(ln)
 }
 

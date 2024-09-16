@@ -32,8 +32,9 @@ func New(cfg *Config) Logger {
 	case LOCAL:
 		opts.Level = slog.LevelInfo
 	case PROD:
-		opts.Level = slog.LevelWarn
+		opts.Level = slog.LevelError
 	}
+	opts.Level = slog.LevelInfo
 	log := slog.New(slog.NewJSONHandler(os.Stdout, &opts))
 	return log
 }
