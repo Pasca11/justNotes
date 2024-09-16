@@ -1,0 +1,135 @@
+basePath: /
+definitions:
+  models.Note:
+    properties:
+      created_at:
+        type: string
+      deadline:
+        type: string
+      id:
+        type: integer
+      text:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: :8080
+info:
+  contact: {}
+  description: Sample weather app
+  title: WeatherApi
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: enter credentials to login
+      parameters:
+      - description: username and password
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Authenticate user
+      tags:
+      - Auth
+  /auth/notes:
+    delete:
+      consumes:
+      - application/json
+      description: enter id to delete note
+      parameters:
+      - description: note id
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/models.Note'
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Delete note
+      tags:
+      - notes
+    get:
+      consumes:
+      - application/json
+      description: returns all user`s notes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Get user`s notes
+      tags:
+      - notes
+    post:
+      consumes:
+      - application/json
+      description: enter text and deadline(optional) to create note
+      parameters:
+      - description: text and deadline
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/models.Note'
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Create note
+      tags:
+      - notes
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: enter credentials to register
+      parameters:
+      - description: username and password
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create user
+      tags:
+      - Auth
+swagger: "2.0"

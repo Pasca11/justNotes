@@ -1,9 +1,11 @@
 package router
 
 import (
+	_ "github.com/Pasca11/justNotes/docs"
 	"github.com/Pasca11/justNotes/internal/transport/controller"
 	"github.com/Pasca11/justNotes/internal/transport/controller/mw"
 	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 func New(c controller.Controller) *chi.Mux {
@@ -20,5 +22,9 @@ func New(c controller.Controller) *chi.Mux {
 		r.Delete("/notes", c.DeleteNote)
 
 	})
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	))
 	return r
 }

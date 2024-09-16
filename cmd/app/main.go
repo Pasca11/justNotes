@@ -15,8 +15,16 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	_ "github.com/Pasca11/justNotes/docs"
 )
 
+// @title WeatherApi
+// @version 1.0
+// @description Sample weather app
+
+// @host :8080
+// @basePath /
 func main() {
 	cfg, err := config.New()
 	if err != nil {
