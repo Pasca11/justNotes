@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      db:
+        condition: "service_healthy"
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: finalAppDB
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d finalAppDB" ]
+      interval: 4s           # How often to run the check
+      timeout: 5s             # Time to wait for the check to complete
+      retries: 5              # How many times to retry before considering the service unhealthy
+      start_period: 30s
