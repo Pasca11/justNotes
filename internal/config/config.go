@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/Pasca11/justNotes/internal/logger"
 	"github.com/Pasca11/justNotes/internal/transport/server"
+	"github.com/Pasca11/justNotes/pkg/logger"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
 	"os"

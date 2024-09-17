@@ -1,8 +1,10 @@
 package mw
 
 import (
+	"github.com/Pasca11/justNotes/internal/metrics"
 	"github.com/Pasca11/justNotes/internal/service"
 	"net/http"
+	"time"
 )
 
 func AuthenticationMiddleware(next http.Handler) http.Handler {
@@ -19,5 +21,15 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(w, r)
+	})
+}
+
+func LatMetricsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		end := time.Since(start).Seconds()
+
+		metrics.RequestHistogram.Observe(end)
 	})
 }

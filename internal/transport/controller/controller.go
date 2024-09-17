@@ -2,9 +2,9 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/Pasca11/justNotes/internal/logger"
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/models"
+	"github.com/Pasca11/justNotes/pkg/logger"
 	"net/http"
 
 	_ "github.com/Pasca11/justNotes/docs"
