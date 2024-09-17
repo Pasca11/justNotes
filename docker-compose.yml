@@ -24,3 +24,14 @@ services:
       timeout: 5s             # Time to wait for the check to complete
       retries: 5              # How many times to retry before considering the service unhealthy
       start_period: 30s
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"

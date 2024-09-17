@@ -2,10 +2,12 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/Pasca11/justNotes/internal/logger"
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/models"
+	"github.com/Pasca11/justNotes/pkg/logger"
 	"net/http"
+
+	_ "github.com/Pasca11/justNotes/docs"
 )
 
 type Controller interface {
@@ -28,6 +30,17 @@ func New(s service.UserService, l logger.Logger) (Controller, error) {
 	}, nil
 }
 
+// Login handles login requests
+// @summary Authenticate user
+// @tags Auth
+// @description enter credentials to login
+// @accept json
+// @produce json
+// @param credentials body models.User true "username and password"
+// @success 200
+// @Failure 500
+// @failure 400
+// @router /auth/login [post]
 func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -40,7 +53,7 @@ func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 	resp, err := c.service.Login(user)
 	if err != nil {
 		c.log.Error(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
@@ -54,6 +67,16 @@ func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Register handles register requests
+// @summary Create user
+// @tags Auth
+// @description enter credentials to register
+// @accept json
+// @param credentials body models.User true "username and password"
+// @success 200
+// @Failure 500
+// @failure 400
+// @router /auth/register [post]
 func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -73,6 +96,16 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// GetNotes return notes
+// @summary Get user`s notes
+// @tags notes
+// @description returns all user`s notes
+// @accept json
+// @produce json
+// @success 200
+// @Failure 500
+// @failure 401
+// @router /auth/notes [get]
 func (c *ControllerImpl) GetNotes(w http.ResponseWriter, r *http.Request) {
 	token := r.Header.Get("Authorization")
 	userId, err := service.ExtractUserIdFromToken(token)
@@ -97,6 +130,16 @@ func (c *ControllerImpl) GetNotes(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// CreateNote handles register requests
+// @summary Create note
+// @tags notes
+// @description enter text and deadline(optional) to create note
+// @accept json
+// @param note body models.Note true "text and deadline"
+// @success 200
+// @failure 500
+// @failure 401
+// @router /auth/notes [post]
 func (c *ControllerImpl) CreateNote(w http.ResponseWriter, r *http.Request) {
 	note := &models.Note{}
 	err := json.NewDecoder(r.Body).Decode(note)
@@ -123,6 +166,15 @@ func (c *ControllerImpl) CreateNote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// DeleteNote handles register requests
+// @summary Delete note
+// @tags notes
+// @description enter id to delete note
+// @accept json
+// @param note body models.Note true "note id"
+// @success 200
+// @failure 500
+// @router /auth/notes [delete]
 func (c *ControllerImpl) DeleteNote(w http.ResponseWriter, r *http.Request) {
 	delNote := &models.Note{}
 	err := json.NewDecoder(r.Body).Decode(delNote)

@@ -4,19 +4,27 @@ import (
 	"context"
 	"errors"
 	"github.com/Pasca11/justNotes/internal/config"
-	"github.com/Pasca11/justNotes/internal/logger"
 	"github.com/Pasca11/justNotes/internal/repository/postgres"
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/internal/transport/controller"
 	"github.com/Pasca11/justNotes/internal/transport/router"
 	"github.com/Pasca11/justNotes/internal/transport/server"
+	"github.com/Pasca11/justNotes/pkg/logger"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	_ "github.com/Pasca11/justNotes/docs"
 )
 
+// @title WeatherApi
+// @version 1.0
+// @description Sample weather app
+
+// @host :8080
+// @basePath /
 func main() {
 	cfg, err := config.New()
 	if err != nil {

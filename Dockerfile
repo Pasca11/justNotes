@@ -17,6 +17,7 @@ WORKDIR /
 COPY --from=builder /app/cmd/bin/app /cmd/bin/app
 COPY --from=builder /app/.env .
 COPY --from=builder /app/config/config.yml /config/
+COPY --from=builder /app/docs .
 
 EXPOSE 8080
 
