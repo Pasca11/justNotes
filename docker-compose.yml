@@ -20,9 +20,9 @@ services:
       - '5432:5432'
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d finalAppDB" ]
-      interval: 4s           # How often to run the check
-      timeout: 5s             # Time to wait for the check to complete
-      retries: 5              # How many times to retry before considering the service unhealthy
+      interval: 4s
+      timeout: 5s
+      retries: 5
       start_period: 30s
   prometheus:
     image: prom/prometheus

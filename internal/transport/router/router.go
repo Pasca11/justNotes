@@ -18,11 +18,11 @@ func New(c controller.Controller) *chi.Mux {
 	r.Route("/api", func(r chi.Router) {
 		r.Use(mw.LatMetricsMiddleware)
 		r.Use(mw.AuthenticationMiddleware)
+		r.Use(mw.AdminOnlyMiddleware)
 
-		r.Get("/notes", c.GetNotes)
-		r.Post("/notes", c.CreateNote)
-		r.Delete("/notes", c.DeleteNote)
-
+		r.Get("/{id}/notes", c.GetNotes)
+		r.Post("/{id}/notes", c.CreateNote)
+		r.Delete("/notes/{id}", c.DeleteNote)
 	})
 
 	r.Get("/swagger/*", httpSwagger.Handler(
