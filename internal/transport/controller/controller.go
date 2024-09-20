@@ -5,7 +5,9 @@ import (
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/models"
 	"github.com/Pasca11/justNotes/pkg/logger"
+	"github.com/go-chi/chi/v5"
 	"net/http"
+	"strconv"
 
 	_ "github.com/Pasca11/justNotes/docs"
 )
@@ -49,6 +51,8 @@ func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	user.Role = "user"
 
 	resp, err := c.service.Login(user)
 	if err != nil {
@@ -107,11 +111,17 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 // @failure 401
 // @router /auth/notes [get]
 func (c *ControllerImpl) GetNotes(w http.ResponseWriter, r *http.Request) {
-	token := r.Header.Get("Authorization")
-	userId, err := service.ExtractUserIdFromToken(token)
+	//token := r.Header.Get("Authorization")
+	//userId, err := service.ExtractUserIdFromToken(token)
+	//if err != nil {
+	//	c.log.Error(err.Error())
+	//	w.WriteHeader(http.StatusUnauthorized)
+	//	return
+	//}
+	userId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		c.log.Error(err.Error())
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	notes, err := c.service.GetNotes(userId)
@@ -149,11 +159,17 @@ func (c *ControllerImpl) CreateNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := r.Header.Get("Authorization")
-	userId, err := service.ExtractUserIdFromToken(token)
+	//token := r.Header.Get("Authorization")
+	//userId, err := service.ExtractUserIdFromToken(token)
+	//if err != nil {
+	//	c.log.Error(err.Error())
+	//	w.WriteHeader(http.StatusUnauthorized)
+	//	return
+	//}
+	userId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		c.log.Error(err.Error())
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

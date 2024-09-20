@@ -107,10 +107,25 @@ func ExtractUserIdFromToken(tokenStr string) (int, error) {
 	return int(claims["user_id"].(float64)), nil
 }
 
+func ExtractRoleFromToken(tokenStr string) (string, error) {
+	token, err := getTokenFromString(tokenStr)
+	if err != nil {
+		return "", fmt.Errorf("service.extractUserIdFromToken: %w", err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", fmt.Errorf("service.extractUserIdFromToken: invalid claims")
+	}
+
+	return claims["role"].(string), nil
+}
+
 func createToken(user *models.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"user_id": user.ID,
+			"role":    user.Role,
 			"exp":     time.Now().Add(time.Hour).Unix(),
 		})
 	signed, err := token.SignedString([]byte(secret))
