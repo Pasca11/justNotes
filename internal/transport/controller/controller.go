@@ -90,6 +90,7 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user.Role = "user"
 	err = c.service.Register(user)
 	if err != nil {
 		c.log.Error(err.Error())
