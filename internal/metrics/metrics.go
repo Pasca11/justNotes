@@ -3,7 +3,7 @@ package metrics
 import "github.com/prometheus/client_golang/prometheus"
 
 var (
-	loginCount = prometheus.NewCounter(prometheus.CounterOpts{
+	LoginCount = prometheus.NewCounter(prometheus.CounterOpts{
 		Name: "login_count",
 		Help: "Number of login attempts",
 	})
@@ -11,7 +11,6 @@ var (
 		Name: "Register_counter",
 		Help: "Counts /register uses",
 	})
-
 	RequestHistogram = prometheus.NewHistogram(prometheus.HistogramOpts{
 		Name: "RequestHistogram",
 		Help: "Histogram of HTTP request latencies",
@@ -19,7 +18,7 @@ var (
 )
 
 func init() {
-	prometheus.MustRegister(loginCount)
+	prometheus.MustRegister(LoginCount)
 	prometheus.MustRegister(RegisterCounter)
 	prometheus.MustRegister(RequestHistogram)
 }

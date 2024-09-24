@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/Pasca11/justNotes/internal/metrics"
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/models"
 	"github.com/Pasca11/justNotes/pkg/logger"
@@ -44,6 +45,8 @@ func New(s service.UserService, l logger.Logger) (Controller, error) {
 // @failure 400
 // @router /auth/login [post]
 func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
+	metrics.LoginCount.Inc()
+
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
@@ -82,6 +85,8 @@ func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 // @failure 400
 // @router /auth/register [post]
 func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
+	metrics.RegisterCounter.Inc()
+
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
@@ -90,6 +95,7 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user.Role = "user"
 	err = c.service.Register(user)
 	if err != nil {
 		c.log.Error(err.Error())

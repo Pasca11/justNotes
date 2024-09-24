@@ -46,7 +46,8 @@ func (db *Database) CreateNewUserTable() error {
 	newTableString := `CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		username VARCHAR(100) NOT NULL UNIQUE,
-		password VARCHAR(100) NOT NULL
+		password VARCHAR(100) NOT NULL,
+		role VARCHAR(20) NOT NULL
 	);`
 
 	_, err := db.DB.Exec(newTableString)
@@ -67,8 +68,8 @@ func (db *Database) CreateNewNoteTable() error {
 }
 
 func (db *Database) CreateUser(user *models.User) error {
-	stmt := `INSERT INTO users (username, password) VALUES ($1, $2)`
-	_, err := db.DB.Exec(stmt, user.Username, user.Password)
+	stmt := `INSERT INTO users (username, password, role) VALUES ($1, $2, $3)`
+	_, err := db.DB.Exec(stmt, user.Username, user.Password, user.Role)
 	if err != nil {
 		return fmt.Errorf("repo.insert.user: %w", err)
 	}
