@@ -48,6 +48,6 @@ func LatMetricsMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 		end := time.Since(start).Seconds()
 
-		metrics.RequestHistogram.Observe(end)
+		metrics.RequestHistogram.WithLabelValues(r.Method, r.URL.Path).Observe(end)
 	})
 }
