@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	authv1 "github.com/Pasca11/gRPC-Auth/proto/gen"
 	"github.com/Pasca11/justNotes/internal/metrics"
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/models"
@@ -22,14 +23,16 @@ type Controller interface {
 }
 
 type ControllerImpl struct {
-	service service.UserService
-	log     logger.Logger
+	notesService service.NotesService
+	userService  service.UserService
+	log          logger.Logger
 }
 
-func New(s service.UserService, l logger.Logger) (Controller, error) {
+func New(s service.NotesService, s2 service.UserService, l logger.Logger) (Controller, error) {
 	return &ControllerImpl{
-		service: s,
-		log:     l,
+		notesService: s,
+		userService:  s2,
+		log:          l,
 	}, nil
 }
 
@@ -55,9 +58,10 @@ func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user.Role = "user"
-
-	resp, err := c.service.Login(user)
+	resp, err := c.userService.Login(&authv1.LoginRequest{
+		Username: user.Username,
+		Password: user.Password,
+	})
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -96,7 +100,10 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.Role = "user"
-	err = c.service.Register(user)
+	_, err = c.userService.Register(&authv1.RegisterRequest{
+		Username: user.Username,
+		Password: user.Password,
+	})
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -118,7 +125,7 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 // @router /auth/notes [get]
 func (c *ControllerImpl) GetNotes(w http.ResponseWriter, r *http.Request) {
 	//token := r.Header.Get("Authorization")
-	//userId, err := service.ExtractUserIdFromToken(token)
+	//userId, err := notesService.ExtractUserIdFromToken(token)
 	//if err != nil {
 	//	c.log.Error(err.Error())
 	//	w.WriteHeader(http.StatusUnauthorized)
@@ -130,7 +137,7 @@ func (c *ControllerImpl) GetNotes(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	notes, err := c.service.GetNotes(userId)
+	notes, err := c.notesService.GetNotes(userId)
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -166,7 +173,7 @@ func (c *ControllerImpl) CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//token := r.Header.Get("Authorization")
-	//userId, err := service.ExtractUserIdFromToken(token)
+	//userId, err := notesService.ExtractUserIdFromToken(token)
 	//if err != nil {
 	//	c.log.Error(err.Error())
 	//	w.WriteHeader(http.StatusUnauthorized)
@@ -179,7 +186,7 @@ func (c *ControllerImpl) CreateNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.service.CreateNote(userId, note)
+	err = c.notesService.CreateNote(userId, note)
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -206,7 +213,7 @@ func (c *ControllerImpl) DeleteNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.service.DeleteNote(delNote.ID)
+	err = c.notesService.DeleteNote(delNote.ID)
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)

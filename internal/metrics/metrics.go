@@ -4,7 +4,7 @@ import "github.com/prometheus/client_golang/prometheus"
 
 var (
 	LoginCount = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "login_count",
+		Name: "Login_counter",
 		Help: "Number of login attempts",
 	})
 	RegisterCounter = prometheus.NewCounter(prometheus.CounterOpts{

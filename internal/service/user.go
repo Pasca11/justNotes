@@ -5,7 +5,6 @@ import (
 	"github.com/Pasca11/justNotes/internal/repository"
 	"github.com/Pasca11/justNotes/models"
 	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"os"
 	"time"
@@ -13,53 +12,45 @@ import (
 
 var secret = os.Getenv("JWT_SECRET")
 
-type UserService interface {
-	Register(user *models.User) error
-	Login(user *models.User) (*models.LoginResponse, error)
-	GetNotes(id int) ([]models.Note, error)
-	CreateNote(id int, note *models.Note) error
-	DeleteNote(id int) error
-}
-
-type UserServiceImpl struct {
+type NotesServiceImpl struct {
 	DB repository.UserRepo
 }
 
-func NewUserService(db repository.UserRepo) UserService {
-	return &UserServiceImpl{
+func NewNotesService(db repository.UserRepo) NotesService {
+	return &NotesServiceImpl{
 		DB: db,
 	}
 }
 
-func (s *UserServiceImpl) Register(user *models.User) error {
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return fmt.Errorf("userService.Register.Hash: %w", err)
-	}
-	user.Password = string(hash)
-	return s.DB.CreateUser(user)
-}
+//func (s *NotesServiceImpl) Register(user *models.User) error {
+//	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+//	if err != nil {
+//		return fmt.Errorf("userService.Register.Hash: %w", err)
+//	}
+//	user.Password = string(hash)
+//	return s.DB.CreateUser(user)
+//}
 
-func (s *UserServiceImpl) Login(user *models.User) (*models.LoginResponse, error) {
-	saved, err := s.DB.GetUser(user.Username)
-	if err != nil {
-		return nil, fmt.Errorf("userService.Login: %w", err)
-	}
+//func (s *NotesServiceImpl) Login(user *models.User) (*models.LoginResponse, error) {
+//	saved, err := s.DB.GetUser(user.Username)
+//	if err != nil {
+//		return nil, fmt.Errorf("userService.Login: %w", err)
+//	}
+//
+//	err = bcrypt.CompareHashAndPassword([]byte(saved.Password), []byte(user.Password))
+//	if err != nil {
+//		return nil, fmt.Errorf("userService.Login: invalid password")
+//	}
+//
+//	token, err := createToken(saved)
+//	if err != nil {
+//		return nil, fmt.Errorf("userService.Login: %w", err)
+//	}
+//
+//	return &models.LoginResponse{Token: token}, nil
+//}
 
-	err = bcrypt.CompareHashAndPassword([]byte(saved.Password), []byte(user.Password))
-	if err != nil {
-		return nil, fmt.Errorf("userService.Login: invalid password")
-	}
-
-	token, err := createToken(saved)
-	if err != nil {
-		return nil, fmt.Errorf("userService.Login: %w", err)
-	}
-
-	return &models.LoginResponse{Token: token}, nil
-}
-
-func (s *UserServiceImpl) GetNotes(id int) ([]models.Note, error) {
+func (s *NotesServiceImpl) GetNotes(id int) ([]models.Note, error) {
 	notes, err := s.DB.GetNotes(id)
 	if err != nil {
 		return nil, fmt.Errorf("userService.GetNotes: %w", err)
@@ -67,7 +58,7 @@ func (s *UserServiceImpl) GetNotes(id int) ([]models.Note, error) {
 	return notes, nil
 }
 
-func (s *UserServiceImpl) CreateNote(id int, note *models.Note) error {
+func (s *NotesServiceImpl) CreateNote(id int, note *models.Note) error {
 	err := s.DB.CreateNote(id, note)
 	if err != nil {
 		return fmt.Errorf("userService.CreateNote: %w", err)
@@ -75,7 +66,7 @@ func (s *UserServiceImpl) CreateNote(id int, note *models.Note) error {
 	return nil
 }
 
-func (s *UserServiceImpl) DeleteNote(id int) error {
+func (s *NotesServiceImpl) DeleteNote(id int) error {
 	err := s.DB.DeleteNote(id)
 	if err != nil {
 		return fmt.Errorf("userService.DeleteNote: %w", err)
