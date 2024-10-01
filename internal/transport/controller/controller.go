@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	authv1 "github.com/Pasca11/gRPC-Auth/proto/gen"
 	"github.com/Pasca11/justNotes/internal/metrics"
 	"github.com/Pasca11/justNotes/internal/service"
 	"github.com/Pasca11/justNotes/models"
@@ -58,10 +57,7 @@ func (c *ControllerImpl) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.userService.Login(&authv1.LoginRequest{
-		Username: user.Username,
-		Password: user.Password,
-	})
+	resp, err := c.userService.Login(user)
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -100,10 +96,7 @@ func (c *ControllerImpl) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.Role = "user"
-	_, err = c.userService.Register(&authv1.RegisterRequest{
-		Username: user.Username,
-		Password: user.Password,
-	})
+	_, err = c.userService.Register(user)
 	if err != nil {
 		c.log.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)

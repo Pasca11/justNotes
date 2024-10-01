@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	authv1 "github.com/Pasca11/gRPC-Auth/proto/gen"
+	"github.com/Pasca11/justNotes/models"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -22,7 +23,7 @@ func NewGRPCUserService(address string) UserService {
 	return service
 }
 
-func (s *gRPCUserService) Login(req *authv1.LoginRequest) (*authv1.LoginResponse, error) {
+func (s *gRPCUserService) Login(req *models.User) (*models.LoginResponse, error) {
 	client := authv1.NewAuthClient(s.conn)
 
 	resp, err := client.Login(context.Background(), &authv1.LoginRequest{})
@@ -30,16 +31,21 @@ func (s *gRPCUserService) Login(req *authv1.LoginRequest) (*authv1.LoginResponse
 		return nil, err
 	}
 
-	return resp, nil
+	return &models.LoginResponse{Token: resp.Token}, nil
 }
 
-func (s *gRPCUserService) Register(req *authv1.RegisterRequest) (*authv1.RegisterResponse, error) {
+func (s *gRPCUserService) Register(req *models.User) (*models.User, error) {
 	client := authv1.NewAuthClient(s.conn)
 
-	resp, err := client.Register(context.Background(), req)
+	resp, err := client.Register(context.Background(), &authv1.RegisterRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	return resp, nil
+	return &models.User{
+		ID: int(resp.UserId), //TODO return ID
+	}, nil
 }

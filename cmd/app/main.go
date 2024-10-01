@@ -41,8 +41,10 @@ func main() {
 	}
 	lg.Debug("Database initialized")
 
-	s := service.NewUserService(db)
-	c, err := controller.New(s, lg)
+	notesService := service.NewNotesService(db)
+	userService := service.NewGRPCUserService("auth:8081")
+
+	c, err := controller.New(notesService, userService, lg)
 	if err != nil {
 		lg.Error("Failed to create controller: " + err.Error())
 		return
