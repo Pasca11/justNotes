@@ -34,7 +34,7 @@ func main() {
 	lg := logger.New(cfg.Logger)
 	lg.Debug("Logger initialized")
 
-	db, err := postgres.NewDatabase()
+	db, err := postgres.NewDatabase(cfg.DB)
 	if err != nil {
 		lg.Error("Failed to connect to database:", err.Error())
 		return

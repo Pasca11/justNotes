@@ -5,20 +5,19 @@ import (
 	"github.com/Pasca11/justNotes/models"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"os"
 )
 
 type Database struct {
 	DB *sqlx.DB
 }
 
-func NewDatabase() (*Database, error) {
+func NewDatabase(cfg *Config) (*Database, error) {
 	dataBase := &Database{}
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
+	dbUser := cfg.User
+	dbPassword := cfg.Password
+	dbName := cfg.DBName
+	dbHost := cfg.Host
+	dbPort := cfg.Port
 	connStr := "user=" + dbUser + " password=" + dbPassword + " dbname=" + dbName + " host=" + dbHost + " port=" + dbPort + " sslmode=disable"
 	db, err := sqlx.Open("postgres", connStr)
 	if err != nil {

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/Pasca11/justNotes/internal/repository/postgres"
 	"github.com/Pasca11/justNotes/internal/transport/server"
 	"github.com/Pasca11/justNotes/pkg/logger"
 	"github.com/ilyakaznacheev/cleanenv"
@@ -9,9 +10,10 @@ import (
 )
 
 type Config struct {
-	App    *App           `yaml:"app"`
-	Server *server.Config `yaml:"server"`
-	Logger *logger.Config `yaml:"logger"`
+	App    *App             `yaml:"app"`
+	Server *server.Config   `yaml:"server"`
+	Logger *logger.Config   `yaml:"logger"`
+	DB     *postgres.Config `yaml:"db"`
 }
 
 type App struct {

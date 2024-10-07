@@ -10,3 +10,9 @@ server:
   write_timeout: 2
 logger:
   level: 'local'
+db:
+  db_user: postgres
+  db_password: postgres
+  db_name: finalAppDB
+  db_host: db
+  db_port: 5432
